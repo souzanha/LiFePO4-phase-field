@@ -5,5 +5,5 @@ Parameters in the config.py-file
 Run simulation:
 python input.py solution_files
 
-Restarting the simulation:
+Restarti simulation:
 python input.py solution_files 2_solution_files
