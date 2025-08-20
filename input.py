@@ -58,9 +58,16 @@ pd.set_option("display.float_format", "{:.4f}".format)
 run = "." if len(sys.argv) < 2 else sys.argv[1]
 restartFlag = os.path.isfile("{}/restart.h5".format(run)) #==True
 
-fs = io.output_directory(run)
-nrg_file = run + "/" + "ene.csv"
-voltage_file = run + "/" + "v_c.csv"
+if restartFlag:
+    restart_run = sys.argv[2]
+    fs = io.output_directory(restart_run)
+    nrg_file = restart_run + "/" + "ene.csv"
+    voltage_file = restart_run + "/" + "v_c.csv"
+else:
+    fs =  io.output_directory(run)
+    nrg_file = run + "/" + "ene.csv"
+    voltage_file = run + "/" + "v_c.csv"
+
 names = [r"$c$", r"$\mu$", r"$u$"]
 auxnames = [r"$\mathcal{F}$", r"$\mathcal{F}_{el}$", r"$\sigma$", r"$\Delta c$"]
 
@@ -504,17 +511,31 @@ if Lz is None:
         df.CellType.Type.triangle,
         Domain["diag"],
     )
+    orgmesh = df.RectangleMesh.create(
+        [df.Point(0, 0), df.Point(Lx, Ly)],
+        [Nx, Ny],
+        df.CellType.Type.triangle,
+        Domain["diag"],
+    )
+
 else:
     imesh = df.BoxMesh.create(
         [df.Point(0, 0, 0), df.Point(Lx, Ly, Lz)],
         [Nx, Ny, Nz],
         df.CellType.Type.tetrahedron,
     )
-
+    orgmesh = df.BoxMesh.create(
+        [df.Point(0, 0, 0), df.Point(Lx, Ly, Lz)],
+        [Nx, Ny, Nz],
+        df.CellType.Type.tetrahedron,
+    )
 
 if restartFlag:
 
-    P1, element, ME, imesh, nmesh, U, U0, t, dt, stats_df, vprofile = io.read_restart(run,dt,PB,nprev)
+    P1, element, ME, nmesh, U, U0, t, dt = io.read_restart(run, dt, nprev, PB, orgmesh)
+
+    vprofile = None
+    stats_df = None
 
     U0[0].assign(U)
 

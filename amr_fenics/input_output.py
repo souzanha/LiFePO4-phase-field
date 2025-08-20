@@ -4,6 +4,7 @@
 import os
 import dolfin as df
 import amr_fenics.helpers as helpers
+import amr_fenics.mesh_domain_funcs as mdf
 
 try:
     from rich import print
@@ -172,7 +173,7 @@ def output_restart(dir, imesh, mesh, U, t, dt):
     restart_solution.close()
 
 
-def read_restart(dir, dt):
+def read_restart(run, dt, nprev, PB, orgmesh):
     """Reads the files to restart simulation.
     Constructs previous finite element object, mesh and FEniCS functions.
 
@@ -188,16 +189,17 @@ def read_restart(dir, dt):
 
     """
 
-    restart_solution = df.HDF5File(helpers.mpiComm, dir + "/restart.h5", "r")
-    imesh = df.Mesh()
-    restart_solution.read(imesh, "/imesh", False)
+    restart_solution = df.HDF5File(helpers.mpiComm, run + "/restart.h5", "r")
     mesh = df.Mesh()
     restart_solution.read(mesh, "/mesh", False)
 
-    P1 = df.FiniteElement("Lagrange", mesh.ufl_cell(), 1)
-    element = df.MixedElement([P1, P1, P1, P1])
-    V = df.FunctionSpace(mesh, element)
-    U = df.Function(V)
+    nmesh = df.Mesh(mesh)
+
+    P1 = df.FiniteElement("Lagrange", orgmesh.ufl_cell(), 1)
+    Pv = df.VectorElement("Lagrange", orgmesh.ufl_cell(), 1)
+    element = df.MixedElement([P1, P1, Pv])
+
+    U, U_n, V = mdf.set_functions(nmesh,element,nprev,PB)
 
     restart_solution.read(U, "/fields")
     attr = restart_solution.attributes("/fields")
@@ -208,7 +210,7 @@ def read_restart(dir, dt):
 
     disp("restart time = {}, last recorded dt = {}".format(t, dt(0)))
 
-    return P1, element, V, imesh, mesh, U, t, dt
+    return P1, element, V, nmesh, U, U_n, t, dt
 
 
 def output_mesh(dir, mesh):
