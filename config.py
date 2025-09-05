@@ -71,8 +71,8 @@ Model = {
     "μeq": -0.0000211,  # [J/m³] equilm chemical potential for To
     "E": 125.7e9,  # [Pa] youngs modulus
     "ν": 0.252,  # [] poisson ratio
-    "e11": 0.0165,  #0.05 [] lattice mismatch along [100]
-    "e22": 0.0036,  #0.036 [] lattice mismatch along [010]
+    "e11": 0.05,  #0.05 [] lattice mismatch along [100]
+    "e22": 0.036,  #0.036 [] lattice mismatch along [010]
     "e33": -0.02,  #-0.02 [] lattice mismatch along [001]
 }
 
