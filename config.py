@@ -40,8 +40,8 @@ Domain = {
 Interval = {
     "timestep": 1e-3,  # initial dt
     "restart": False,  # write restart-checkpoints?
-    "f_checkpoint": 1000,  # checkpoint frequency
-    "time_interval_output": 1000,  # time interval output
+    "f_checkpoint": 100,  # checkpoint frequency
+    "time_interval_output": 100,  # time interval output
     "energy": 5,  # energy summary
     "domain": 100,  # XDMF checkpoint
     "runtime": 1e-3,  # seconds
