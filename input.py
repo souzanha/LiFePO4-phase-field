@@ -760,7 +760,10 @@ while goSim:
 
         if iter_s % checkpoint_frequency == 0:
             io.disp(f"│ ├─ Writing checkpoint")
-            io.output_restart(run, imesh, nmesh, U, t, dt)
+            if restartFlag:
+                io.output_restart(restart_run, imesh, nmesh, U, t, dt)
+            else:
+                io.output_restart(run, imesh, nmesh, U, t, dt)
 
         if iter_s > amrStart or restartFlag == True:
             time_to_refine -= 1
