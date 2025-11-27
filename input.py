@@ -534,6 +534,9 @@ if restartFlag:
 
     P1, element, ME, nmesh, U, U0, t, dt = io.read_restart(run, dt, nprev, PB, orgmesh)
 
+    resolution = amr.calc_resolution(emax, emin)
+    imesh = amr.initial_mesh_elect(orgmesh, resolution, emax)
+
     vprofile = None
     stats_df = None
 
