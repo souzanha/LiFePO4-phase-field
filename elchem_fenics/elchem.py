@@ -22,7 +22,9 @@ def MHC(λ, μ, μelec, RTv, j0coeff, Const):  # Marcus-Hush-Chidsey
 
     A = Const
 
-    J = A * (j0coeff * df.sqrt(math.pi * λ) * ufl.tanh(Δμ / 2) * (1 - ufl.erf(exp)))
+    pf = (df.exp(Δμ) - df.exp(-Δμ)) / (df.exp(Δμ) + df.exp(-Δμ) + 2)  #ufl.tanh(Δμ / 2)
+
+    J = A * (j0coeff * df.sqrt(math.pi * λ) * pf * (1 - ufl.erf(exp)))
 
     return J
 
