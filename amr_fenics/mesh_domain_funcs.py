@@ -206,7 +206,8 @@ class PeriodicBoundary(df.SubDomain):
         Check if a point is inside the periodic domain.
         """
         # Returns True if the point is on the boundary
-        return return df.near(x[0], 0) and on_boundary
+
+        return df.near(x[0], 0) and on_boundary
 
     def map(self, x, y):
         """
