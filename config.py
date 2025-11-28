@@ -34,7 +34,7 @@ Domain = {
     "p": 1,  # element/polynomial degree (higher -> more coefficients)
     "q": 2,  # quadrature_degree (higher -> more nodes in element)
     "diag": "right/left",  # finite element node topology
-    "PB": [True, False, True],  # periodic BCs?
+    "PB": [True, False, False],  # periodic BCs
 }
 
 Interval = {

@@ -206,7 +206,7 @@ class PeriodicBoundary(df.SubDomain):
         Check if a point is inside the periodic domain.
         """
         # Returns True if the point is on the boundary
-        return on_boundary
+        return return df.near(x[0], 0) and on_boundary
 
     def map(self, x, y):
         """
@@ -222,7 +222,7 @@ class PeriodicBoundary(df.SubDomain):
 def set_functions(mesh, element, nprev, PB):
 
     if PB:
-        pbc = PeriodicBoundary(mesh, PB)
+        pbc = PeriodicBoundary(mesh, PB) #maps left to right boundary
         V = df.FunctionSpace(mesh, element, constrained_domain=pbc)
     else:
         V = df.FunctionSpace(mesh, element)
