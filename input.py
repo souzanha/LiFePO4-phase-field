@@ -46,6 +46,8 @@ import amr_fenics.utility as ut
 
 import elchem_fenics.elchem as elchem
 
+import energy_fenics.energy as energy
+
 # === Job Parameters ==
 from config import Adapt, Domain, Interval, Model, Solver, PetscOpt
 
@@ -296,25 +298,6 @@ def f_elas(C, u, c, ϵ0):
 
     return σ, fel
 
-
-def plog(c, tol):
-    Δc = c - tol
-
-    t0 = df.ln(tol)
-    t1 = Δc / tol
-    t2 = -(Δc**2) / (2 * tol**2)
-    t3 = Δc**3 / (3 * tol**3)
-
-    return ufl.conditional(ufl.lt(c, tol), t0 + t1 + t2 + t3, df.ln(c))
-
-
-def f_chem(rtv, om, c):
-    entropy = rtv * (c * plog(c, 1e-3) + (1 - c) * plog(1 - c, 1e-3))
-    enthalpy = om * c * (1 - c)
-
-    return entropy + enthalpy
-
-
 def equation_solve(U, U0, ME, mesh, element, dt, BDF2, time_bdf2):
     # Split mixed functions
     c, mu, u = df.split(U)
@@ -331,7 +314,8 @@ def equation_solve(U, U0, ME, mesh, element, dt, BDF2, time_bdf2):
 
     replacement = {cv: c}
 
-    fdens = f_chem(RTv, Om, c_v)
+    fdens = energy.regsol(RTv, Om, c_v)
+
     σ, fel = f_elas(C, u, c_v, ϵ0)
     fgrad = (1 / 2) * df.inner(df.grad(c_v), df.grad(c_v))
     Func = fgrad + fdens + fel
